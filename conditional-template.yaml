@@ -10,7 +10,7 @@ spec:
 
   parameters:
     # ----------------------------- PAGE 1 -------------------------------
-    - title: Step 1: Basic Information
+    - title: Step 1 Basic Information
       required:
         - app_type
       properties:
@@ -29,7 +29,7 @@ spec:
           default: Web App
 
     # ----------------------------- PAGE 2 -------------------------------
-    - title: Step 2: Advanced Configuration
+    - title: Step 2 Advanced Configuration
       required:
         - fe_name
       # allOf allows us to check values from Page 1 (global state)
