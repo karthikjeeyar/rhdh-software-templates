@@ -29,48 +29,42 @@ spec:
           default: Web App
 
     # ----------------------------- PAGE 2 -------------------------------
-    - title: Step 2 Advanced Configuration
+    - title: Tell me more about your Front-End
       required:
         - fe_name
-      # allOf allows us to check values from Page 1 (global state)
-      allOf:
-        - if:
-            properties:
-              app_type:
-                const: Web App
-          then:
-            properties:
-              fe_type:
-                title: Web App Q1
-                type: string
-            required:
-              - fe_type
-        - if:
-            properties:
-              app_type:
-                const: Function App
-          then:
-            properties:
-              function_app_type:
-                title: Func App Q2
-                type: string
-            required:
-              - function_app_type
-      
-      # Properties that show regardless of what was picked on Page 1
       properties:
+        # 1. We MUST declare the variable here for the page to "see" it.
+        # 2. We do NOT use ${{ parameters.app_type }}. 
+        # 3. Backstage will automatically fill this with the value from Page 1 
+        #    because the key 'app_type' matches the key from Page 1.
+        app_type:
+          type: string
+          ui:widget: hidden
+  
         fe_name:
-          title: Frontend Instance Name
+          title: Name
           type: string
-          maxLength: 10
-          description: Ex. web-prod
-        app_type_debug:
-          type: string
-          title: "Internal Value Check"
-          description: "If this is empty, Page 2 can't see Page 1's data"
-          default: ${{ parameters.app_type }}
-          ui:options:
-            rows: 1
+          description: Ex. web
+  
+      dependencies:
+        app_type:
+          oneOf:
+            - properties:
+                app_type:
+                  const: "Web App"
+                fe_type:
+                  title: Web App Q1
+                  type: string
+              required:
+                - fe_type
+            - properties:
+                app_type:
+                  const: "Function App"
+                function_app_type:
+                  title: Func App Q2
+                  type: string
+              required:
+                - function_app_type
 
   steps:
     - id: log-message
