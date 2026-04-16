@@ -1,0 +1,71 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: multi-page-conditional-template
+  title: Multi-Page Conditional Form
+  description: An example of referencing Page 1 values to change Page 2 questions.
+spec:
+  owner: platform-team
+  type: service
+
+  parameters:
+  - title: Fill in some steps
+    required:
+      - app_type
+    properties:
+      app:
+        title: App Code
+        type: string
+        maxLength: 3
+        description: Ex. SA1
+      app_type:
+        title: Select app type for Front-End
+        type: string
+        enum:
+          - Web App
+          - Function App
+          - Logic App
+        enumNames:
+          - "Web App"
+          - "Function App"
+          - "Logic App"
+
+#-----------------------------PAGE 2-------------------------------
+
+  - title: Tell me more about your Front-End
+    required:
+      - fe_name
+    properties:
+      app_type:
+        type: string
+        ui:widget: hidden
+        
+      fe_name:
+        title: Name
+        type: string
+        maxLength: 3
+        description: Ex. web
+    dependencies:
+      #Value from PAGE 1
+      app_type:
+        allOf:
+          - if:
+            properties:
+              app_type:
+                enum:
+                  - Web App
+            then:
+              properties:
+                fe_type:
+                  title: Web App Q1
+                  type: string
+          - if:
+            properties:
+             app_type:
+               enum:
+                 - Function App
+            then:
+            properties:
+              function_app_type:
+                title: Func App Q2
+                type: string
