@@ -64,6 +64,13 @@ spec:
           type: string
           maxLength: 10
           description: Ex. web-prod
+        app_type_debug:
+          type: string
+          title: "Internal Value Check"
+          description: "If this is empty, Page 2 can't see Page 1's data"
+          default: ${{ parameters.app_type }}
+          ui:options:
+            rows: 1
 
   steps:
     - id: log-message
