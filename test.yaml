@@ -1,0 +1,94 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: multi-page-conditional-template
+  title: Multi-Page Conditional Form
+  description: An example of referencing Page 1 values to change Page 2 questions.
+spec:
+  owner: platform-team
+  type: service
+
+  parameters:
+    # ----------------------------- PAGE 1 -------------------------------
+    - title: Step 1 Basic Information
+      required:
+        - app_type
+      properties:
+        app_code:
+          title: App Code
+          type: string
+          maxLength: 3
+          description: Ex. SA1
+        app_type:
+          title: Select app type for Front-End
+          type: string
+          enum:
+            - Web App
+            - Function App
+            - Logic App
+          default: Web App
+
+    # ----------------------------- PAGE 2 -------------------------------
+    - title: Step 2 Advanced Configuration
+      required:
+        - fe_name
+      # allOf allows us to check values from Page 1 (global state)
+      allOf:
+        - if:
+            properties:
+              app_type:
+                const: Web App
+          then:
+            properties:
+              fe_type:
+                title: Web App Q1
+                type: string
+            required:
+              - fe_type
+        - if:
+            properties:
+              app_type:
+                const: Function App
+          then:
+            properties:
+              function_app_type:
+                title: Func App Q2
+                type: string
+            required:
+              - function_app_type
+      
+      # Properties that show regardless of what was picked on Page 1
+      properties:
+        fe_name:
+          title: Frontend Instance Name
+          type: string
+          maxLength: 10
+          description: Ex. web-prod
+
+  steps:
+    - id: log-message
+      action: debug:log
+      input:
+        extra:
+          app_code: ${{ parameters.app_code }}
+          app_type: ${{ parameters.app_type }}
+          fe_name: ${{ parameters.fe_name }}
+          # These will only exist if their specific condition was met
+          fe_type: ${{ parameters.fe_type }}
+          runtime: ${{ parameters.runtime_version }}
+
+    - id: fetch-base
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.app_code }}
+          type: ${{ parameters.app_type }}
+
+  output:
+    links:
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps['log-message'].output.entityRef }}
+
+  
