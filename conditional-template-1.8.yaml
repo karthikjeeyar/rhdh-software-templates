@@ -50,22 +50,22 @@ spec:
       app_type:
         allOf:
           - if:
-            properties:
-              app_type:
-                enum:
-                  - Web App
+              properties:
+                app_type:
+                  enum:
+                    - Web App
             then:
               properties:
                 fe_type:
                   title: Web App Q1
                   type: string
           - if:
-            properties:
-             app_type:
-               enum:
-                 - Function App
+              properties:
+               app_type:
+                 enum:
+                   - Function App
             then:
-            properties:
-              function_app_type:
-                title: Func App Q2
-                type: string
+              properties:
+                function_app_type:
+                  title: Func App Q2
+                  type: string
